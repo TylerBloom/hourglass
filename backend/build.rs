@@ -3,10 +3,7 @@
  * JS bindings. Trunk is used to compile and generate the app and the JS bindings.
  */
 
-use std::{
-    env,
-    process::{Command, Stdio},
-};
+use std::{env, process::Command};
 
 fn main() -> Result<(), i32> {
     let wd = env::var("CARGO_MANIFEST_DIR").unwrap();
@@ -27,29 +24,14 @@ fn main() -> Result<(), i32> {
             panic!("failed to install rustup")
         }
 
-        // Install `cargo binstall` to get other deps
-        let curl_cmd = Command::new("curl")
-            .args(["-L", "--proto", "'=https'", "--tlsv1.2", "-sSf", "https://raw.githubusercontent.com/cargo-bins/cargo-binstall/main/install-from-binstall-release.sh"])
-            .stdout(Stdio::piped())
-            .spawn()
-            .expect("could not run curl");
-        if Command::new("bash")
-            .stdin(Stdio::from(curl_cmd.stdout.unwrap()))
+        // Install `trunk` to compile the frontend
+        if !std::process::Command::new("cargo")
+            .args(["install", "trunk"])
             .status()
-            .expect("could not run bash")
+            .expect("failed to run rustup")
             .success()
         {
-            panic!("failed to install `cargo binstall`")
-        }
-
-        // Install `trunk`
-        if !Command::new("cargo")
-            .args(["binstall", "--no-confirm", "trunk"])
-            .status()
-            .expect("could not run `cargo binstall`")
-            .success()
-        {
-            panic!("failed to install `trunk`")
+            panic!("failed to install rustup")
         }
     }
 
