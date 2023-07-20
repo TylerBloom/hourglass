@@ -21,17 +21,17 @@ fn main() -> Result<(), i32> {
             .expect("failed to run rustup")
             .success()
         {
-            panic!("failed to install rustup")
+            panic!("failed to install wasm32 target")
         }
 
         // Install `trunk` to compile the frontend
         if !std::process::Command::new("cargo")
             .args(["install", "trunk"])
             .status()
-            .expect("failed to run rustup")
+            .expect("failed to run cargo install")
             .success()
         {
-            panic!("failed to install rustup")
+            panic!("failed to install trunk")
         }
     }
 
