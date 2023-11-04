@@ -13,6 +13,8 @@ opt-level="z"
 # In-House deps
 hourglass-model = { path = "../model" }
 
-# Replace this with the UI crate of your choice
 yew = { version = "0.20", features = ["csr"] }
-yew-router = { version = "0.17.0" }
+instant = { version = "0.1", features = ["wasm-bindgen"] }
+derive_more = "0.99.17"
+gloo-timers = { version = "0.3", features = ["futures"] }
+web-sys = "0.3.65"
