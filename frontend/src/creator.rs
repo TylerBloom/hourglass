@@ -4,7 +4,7 @@ use derive_more::From;
 use instant::Duration;
 use yew::{html, Context, Html};
 
-use crate::{input::TextInput, ViewMessage, Viewer, timer::TimerMessage};
+use crate::{input::TextInput, timer::TimerMessage, ViewMessage, Viewer};
 
 pub struct TimerCreator {
     name: String,
@@ -36,7 +36,8 @@ impl TimerCreator {
             }
             CreatorMessage::Submit => {
                 if let Some(dur) = self.duration {
-                    ctx.link().send_message(TimerMessage::NewTimer(self.name.clone(), dur));
+                    ctx.link()
+                        .send_message(TimerMessage::NewTimer(self.name.clone(), dur));
                 }
             }
         }

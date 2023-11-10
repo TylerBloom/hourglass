@@ -73,7 +73,7 @@ impl Component for Viewer {
         html! {
             <>
                 { self.creator.view(ctx) }
-                { self.timers.view() }
+                { self.timers.view(ctx) }
             </>
         }
     }
