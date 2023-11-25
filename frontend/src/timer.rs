@@ -5,6 +5,8 @@ use yew::{html, Context, Html};
 
 use crate::Viewer;
 
+pub static RECORD_MSG: &str = "Please report your match BEFORE leaving your table";
+
 #[derive(Debug, Clone, PartialEq, Eq)]
 struct Timer {
     name: String,
@@ -44,10 +46,13 @@ impl Timer {
         let id = self.id;
         let cb = ctx.link().callback(move |_| TimerMessage::DeleteTimer(id));
         html! {
-            <>
-                <h1 style={ self.text_color() }> { format!("{}: {}", self.name, self.display_time_left()) } </h1>
-                <button onclick = {cb}> { "X" } </button>
-            </>
+            <tr>
+                <td class = "major-inner">
+                    <h1 style={ self.text_color() }> { format!("{}: {}", self.name, self.display_time_left()) } </h1>
+                    <p> { RECORD_MSG } </p>
+                </td>
+                <td class = "closer"> <button onclick = {cb}> { "X" } </button> </td>
+            </tr>
         }
     }
 
@@ -56,10 +61,13 @@ impl Timer {
         let id = self.id;
         let cb = ctx.link().callback(move |_| TimerMessage::DeleteTimer(id));
         html! {
-            <>
-                <p style={ self.text_color() }> { format!("{}: {}", self.name, self.display_time_left()) } </p>
-                <button onclick = {cb}> { "X" } </button>
-            </>
+            <tr>
+                <td class = "minor-inner">
+                <h3 style={ self.text_color() }> { format!("{}: {}", self.name, self.display_time_left()) } </h3>
+                <p> { RECORD_MSG } </p>
+                </td>
+                <td class = "closer"> <button onclick = {cb}> { "X" } </button> </td>
+            </tr>
         }
     }
 
@@ -134,7 +142,7 @@ impl TimerStack {
             TimerMessage::Rotate => {
                 ctx.link().send_future(self.rotate_tick());
                 if !self.timers.is_empty() {
-                    self.timers.rotate_left(1);
+                    self.timers.rotate_right(1);
                 }
             }
             TimerMessage::DeleteTimer(id) => {
@@ -151,9 +159,30 @@ impl TimerStack {
         };
         html! {
             <>
-            { timer.major_view(ctx) }
-            { for iter.map(|timer| timer.minor_view(ctx)) }
+            <table>
+            <tr>
+            <td class = "major">
+                { timer.major_view(ctx) }
+            </td>
+            </tr>
+            </table>
+            <p> { "" } </p>
+            <table>
+            {
+                for iter.map(|timer| wrapped_minor_row(timer.minor_view(ctx)))
+            }
+            </table>
             </>
         }
+    }
+}
+
+fn wrapped_minor_row(inner: Html) -> Html {
+    html! {
+        <tr>
+            <td class = "spacer"> { "" } </td>
+            <td class = "minor"> { inner } </td>
+            <td class = "spacer"> { "" } </td>
+        </tr>
     }
 }
